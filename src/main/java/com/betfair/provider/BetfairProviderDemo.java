@@ -21,10 +21,8 @@ public class BetfairProviderDemo {
 	private String applicationKey;
 	private String sessionToken;
 
-    public void start(String appKey, String ssoid) {
+    public void start() {
 
-        this.applicationKey = appKey;
-        this.sessionToken = ssoid;
 
         try {
 
@@ -37,7 +35,7 @@ public class BetfairProviderDemo {
             Set<String> eventTypeIds = new HashSet<String>();
 
             System.out.println("1.(listEventTypes) Get all Event Types...\n");
-            List<EventTypeResult> r = rescriptOperations.listEventTypes(marketFilter);
+            List<EventTypeResult> r = rescriptOperations.listEventTypes(null);
             System.out.println("2. Extract Event Type Id for Horse Racing...\n");
             for (EventTypeResult eventTypeResult : r) {
                 if(eventTypeResult.getEventType().getName().equals("Horse Racing")){

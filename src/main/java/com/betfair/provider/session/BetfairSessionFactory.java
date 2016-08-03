@@ -2,6 +2,7 @@ package com.betfair.provider.session;
 
 
 import com.betmonkey.domain.Session;
+import com.betmonkey.exception.DataRetrievalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -45,16 +46,21 @@ public class BetfairSessionFactory implements SessionFactory {
                 HttpEntity requestEntity = new HttpEntity((Object)postParameters, (MultiValueMap)headers);
                 this.session = (Session)restTemplate.postForObject(BETFAIR_URL, (Object)requestEntity, (Class)Session.class, new Object[0]);
                 SessionCache.getInstance().addSession(userName, this.session);
+                Log.info("Logged In " + this.session.toString());
             }
-            System.out.println(this.session.toString());
+
             return this.session;
         }
 
 
-        public Session getSession() {
+        public Session getSession() throws DataRetrievalException {
             Session session = SessionCache.getInstance().getSession(this.userName);
             if (session == null) {
                 session = this.login(System.getenv("USER"), System.getenv("PASSWORD"), System.getenv("APP_KEY"));
+                if(session.getStatus().equals("FAIL"))
+                {
+                  throw new DataRetrievalException("Provider Login Failed ",session.getError(),"LOGINFAIL");
+                }
             }
             Log.info(session.toString());
             return session;

@@ -1,8 +1,5 @@
 package com.betfair.provider;
 
-import com.betfair.provider.session.BetfairSessionFactory;
-import com.betmonkey.domain.Session;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,11 +40,9 @@ public class BetfairDemoRunner {
 
         BufferedReader inputStreamReader = null;
         //getting the AppKey and the session token
-        BetfairSessionFactory factory = new BetfairSessionFactory();
-        Session session = factory.getSession();
 
         BetfairProviderDemo rescriptDemo = new BetfairProviderDemo();
-        rescriptDemo.start(session.getProduct(), session.getToken());
+        rescriptDemo.start();
 
     }
 

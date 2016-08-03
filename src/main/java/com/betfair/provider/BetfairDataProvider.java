@@ -35,25 +35,29 @@ public class BetfairDataProvider implements DataProvider {
     private final String locale = Locale.getDefault().toString();
 
 
-    private BetfairDataProvider(){}
+    private BetfairDataProvider(){
+        sessionFactory= new BetfairSessionFactory();
+    }
 
-    private static Session session = null;
 
 
+    private static BetfairSessionFactory sessionFactory;
 
 
     public static BetfairDataProvider getInstance(){
         if (instance == null){
             instance = new BetfairDataProvider();
-            BetfairSessionFactory sessionFactory = new BetfairSessionFactory();
-            session =sessionFactory.getSession();
+
+
         }
         return instance;
     }
 
     public List<EventTypeResult> listEventTypes(MarketFilter filter) throws DataRetrievalException {
+        Session session = sessionFactory.getSession();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(FILTER, filter);
+
         params.put(LOCALE, locale);
         String result = getInstance().makeRequest(BetfairOperationCall.LISTEVENTTYPES.getOperationName(), params, session.getProduct(), session.getToken());
 
@@ -67,6 +71,7 @@ public class BetfairDataProvider implements DataProvider {
     public List<MarketBook> listMarketBook(List<String> marketIds, PriceProjection priceProjection, OrderProjection orderProjection,
                                            MatchProjection matchProjection, String currencyCode) throws DataRetrievalException {
         Map<String, Object> params = new HashMap<String, Object>();
+        Session session = sessionFactory.getSession();
         params.put(LOCALE, locale);
         params.put(MARKET_IDS, marketIds);
         params.put(PRICE_PROJECTION, priceProjection);
@@ -84,6 +89,7 @@ public class BetfairDataProvider implements DataProvider {
     public List<MarketCatalogue> listMarketCatalogue(MarketFilter filter, Set<MarketProjection> marketProjection,
                                                      MarketSort sort, String maxResult) throws DataRetrievalException {
         Map<String, Object> params = new HashMap<String, Object>();
+        Session session = sessionFactory.getSession();
         params.put(LOCALE, locale);
         params.put(FILTER, filter);
         params.put(SORT, sort);
@@ -100,6 +106,7 @@ public class BetfairDataProvider implements DataProvider {
 
     public PlaceExecutionReport placeOrders(String marketId, List<PlaceInstruction> instructions, String customerRef) throws DataRetrievalException {
         Map<String, Object> params = new HashMap<String, Object>();
+        Session session = sessionFactory.getSession();
         params.put(LOCALE, locale);
         params.put(MARKET_ID, marketId);
         params.put(INSTRUCTIONS, instructions);
@@ -126,7 +133,7 @@ public class BetfairDataProvider implements DataProvider {
         if(response != null)
             return response;
         else
-            throw new DataRetrievalException();
+            throw new DataRetrievalException("NULL Response Recieved from " + operation +  requestString,"","");
     }
 
 }

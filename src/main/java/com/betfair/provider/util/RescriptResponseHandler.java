@@ -17,11 +17,10 @@ public class RescriptResponseHandler implements ResponseHandler<String> {
         HttpEntity entity = response.getEntity();
         if (statusLine.getStatusCode() != 200) {
 
-            String s = entity == null ? null : EntityUtils.toString(entity, ENCODING_UTF_8);
-            System.out.println("Call to api-ng failed\n");
-            System.out.println(s);
-            System.exit(0);
 
+            String s = entity == null ? null : EntityUtils.toString(entity, ENCODING_UTF_8);
+            throw new IOException(s);
+            //return s;
         }
 
         return entity == null ? null : EntityUtils.toString(entity,ENCODING_UTF_8);
